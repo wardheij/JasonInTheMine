@@ -1,2 +1,2 @@
-# JasonOnTheBus
-Multi Agent Systems transportation network
+# JasonInTheMine
+Data Mining Techniques repo
