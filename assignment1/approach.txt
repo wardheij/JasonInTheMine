@@ -1,0 +1,9 @@
+TODO
+
+1. inladen & converteren dataset 
+	- MxNxO array, M = patient#, N = time, O = variabele, gemiddeld over de dag
+2. K-means 
+	- moods niet gebruiken voor clustering?
+	- bereken average mood van alle nodes per cluster
+3. RNN -> LSTM?
+4. Benchmark
