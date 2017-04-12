@@ -44,4 +44,5 @@ def write_data(data, filename):
 					out.writerow([patient, date, variable, value / amount, amount])
 
 data = read_data('dataset_mood_smartphone.csv')
+print len(data)
 write_data(data, 'compressed.csv')
