@@ -27,10 +27,19 @@ def read_data(filename):
 
 			entries[patient][date][variable] = float(value)
 
+		'''
+		Om de een of andere reden overschrijft de laatste variable alles, dus de
+		waarde voor 'call' is voor alle patients op alle data hetzelfde als de
+		laatste entry in de csv voor 'call', en ik weet niet waarom. Misschien
+		doe ik wel iets heel erg niet python-esk, maar alles leek tot dan toe
+		goed te gaan. Entries moet eindigen als een 3-layered dict van patients>
+		dates>variables, met 0's als er een variable mist die dag. 
+		'''
 		return entries
 
 data = read_data('compressed.csv')
 
+# ignore this
 def process_data(data):
 	for patient, dates in data.iteritems():
 		print(patient)
