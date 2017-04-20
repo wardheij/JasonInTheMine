@@ -1,3 +1,4 @@
+import copy
 import csv
 from sklearn.cluster import KMeans
 
@@ -23,7 +24,7 @@ def read_data(filename):
 			if patient not in entries:
 				entries[patient] = {}
 			if date not in entries[patient]:
-				entries[patient][date] = entry
+				entries[patient][date] = copy.copy(entry)
 
 			entries[patient][date][variable] = float(value)
 
@@ -46,7 +47,7 @@ def process_data(data):
 		for date, entries in dates.iteritems():
 			print(dates)
 
-process_data(data)
+# process_data(data)
 	# fix for missing data
 	# http://stackoverflow.com/questions/35611465/python-scikit-learn-clustering-with-missing-data
 
