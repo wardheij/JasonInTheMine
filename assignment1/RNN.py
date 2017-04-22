@@ -1,5 +1,6 @@
 from keras.models import Sequential
 from keras.layers import Dense, Activation
+import keras
 
 model = Sequential()
 model.add(Dense(32, activation='relu', input_dim=100))

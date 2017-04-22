@@ -1,5 +1,6 @@
 import copy
 import csv
+import numpy as np
 from sklearn.cluster import KMeans
 
 def read_data(filename):
@@ -36,6 +37,7 @@ def process_data(data_dict):
 	all variables.
 	'''
 	data = []
+	times = 1
 	for patient, dates in data_dict.iteritems():
 		for date, entries in dates.iteritems():
 			values = entries.values()
@@ -44,34 +46,44 @@ def process_data(data_dict):
 			# data.append(values[:7] + values[9:])
 			data.append(values)
 
-	return data
+	return np.array(data)
 
 def init_k_means(init_data):
 	'''
     //
 	'''
-	no_clusters = 10
+	no_clusters = 5
 	kmeans = KMeans(n_clusters=no_clusters)
+	print init_data.shape
+	init_data = np.array(init_data)
 	kmeans.fit(init_data)
 
-	helper_mean = [[0,0] for y in range(no_clusters)]
+	helper_mean = [[0, 0] for y in range(no_clusters)]
 
 	for i, val in enumerate(kmeans.labels_):
-		helper_mean[val][0] += init_data[i][8]
-		helper_mean[val][1] += 1
+		print i, val
+		if init_data[i][8] != 0:
+			helper_mean[val][0] += init_data[i][8]
+			helper_mean[val][1] += 1
 
    	cluster_mean = []
 
 	for means in helper_mean:
-		cluster_mean.append(means[0] / means[1])
+		if means[1] != 0:
+			cluster_mean.append(means[0] / means[1])
+		else:
+			cluster_mean.append(0)
+
+	print cluster_mean
 
 	return kmeans, cluster_mean
 
-def predict_kmeans(cluster_mean, new_data):
+def predict_kmeans(kmeans, cluster_mean, new_data):
     return cluster_mean[kmeans.predict(new_data)[0]]
 
 if __name__ == '__main__':
 	data_dict = read_data('compressed.csv')
 	data_matrix = process_data(data_dict)
 	kmeans, cluster_mean = init_k_means(data_matrix)
-	print(predict_kmeans(cluster_mean, data_matrix[0]))
+	for data in data_matrix:
+		print(data[8], predict_kmeans(kmeans, cluster_mean, data_matrix))
