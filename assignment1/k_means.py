@@ -44,31 +44,29 @@ def process_data(data_dict):
 		for date, entries in dates.iteritems():
 			values = entries.values()
 
-			# # leave out mood?
-			# data.append(values[:7] + values[9:])
-			data.append(values)
+			if values[8] != 0:
+				data.append({patient + date: values})
 
-	return np.array(data)
+	return data
 
-def init_k_means(init_data):
+def init_k_means(in_data, no_clusters = 10):
 	'''
     //
 	'''
-	init_data = [elem for elem in init_data if elem[8] != 0]
-	init_data = np.array(init_data)
+	in_data = sorted(in_data)
+	init_data = np.array([elem.values()[0] for elem in in_data])
 
-	no_clusters = 10
-	kmeans = KMeans(n_clusters=no_clusters)
+	kmeans = KMeans(n_clusters = no_clusters, n_init = 10)
 
-	print init_data[0, np.arange(init_data.shape[1]) != 8]
-
-	kmeans.fit(init_data[:, np.arange(init_data.shape[1]) != 8])
+	# Leave out mood?
+	kmeans.fit(init_data)
+	# kmeans.fit(init_data[:, np.arange(init_data.shape[1]) != 8])
 
 	helper_mean = [[0, 0] for y in range(no_clusters)]
 
 	for i, val in enumerate(kmeans.labels_):
-		if init_data[i][8] != 0:
-			helper_mean[val][0] += init_data[i][8]
+		if i < len(kmeans.labels_) - 1 and in_data[i].keys()[0][:7] == in_data[i + 1].keys()[0][:7]:
+			helper_mean[val][0] += in_data[i + 1].values()[0][8]
 			helper_mean[val][1] += 1
 
    	cluster_mean = []
@@ -93,7 +91,9 @@ def process_kmeans(kmeans, cluster_mean, data, timeframe = 1):
 		for i, date in enumerate(dates):
 			if i < timeframe or pat_value[date].values()[8] == 0:
 				continue
-			predictions.append([patient, date, predict_kmeans(kmeans, cluster_mean, [pat_value[date].values()[:8]+pat_value[date].values()[9:]])])
+			# Leave out mood?
+			predictions.append([patient, date, predict_kmeans(kmeans, cluster_mean, [pat_value[date].values()])])	
+			# predictions.append([patient, date, predict_kmeans(kmeans, cluster_mean, [pat_value[date].values()[:8]+pat_value[date].values()[9:]])])
 
 	return predictions
 
@@ -115,13 +115,28 @@ def score(data, predictions):
 if __name__ == '__main__':
 	data_dict = read_data('compressed.csv')
 
-	train_data = dict(data_dict.items()[(len(data_dict) * 4)/5:])
+	train_data = dict(data_dict.items()[len(data_dict)/5:])
 	test_data = dict(data_dict.items()[:len(data_dict)/5])
 
 	data_matrix = process_data(train_data)
-	kmeans, cluster_mean = init_k_means(data_matrix)
-	predictions = process_kmeans(kmeans, cluster_mean, test_data)
-	print score(data_dict, predictions)
+
+	best = 0
+	best_percentage = 0
+	best_error = 0
+	for i in range(1, 30):
+		kmeans, cluster_mean = init_k_means(data_matrix, i)
+		predictions = process_kmeans(kmeans, cluster_mean, test_data)
+		percentage, avg_error = score(data_dict, predictions)
+
+		print i, "Percentage: ", percentage, "\t Average error:", avg_error
+
+		if percentage > best_percentage or avg_error < best_error:
+			best = i
+			best_percentage = percentage
+			best_error = avg_error
+
+	print "Best is: ", best, "\t Percentage: ", best_percentage, "\t Average error:", best_error
+
 
 	# for data in data_matrix:
 	# 	print(data[8], predict_kmeans(kmeans, cluster_mean, [data]))
