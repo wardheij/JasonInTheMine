@@ -45,6 +45,7 @@ def process(data, timeframe = 1):
 def score(data, predictions):
 	points = 0.0
 	tries = len(predictions)
+	error = 0
 
 	for prediction in predictions:
 		patient, date, value = prediction
@@ -52,7 +53,9 @@ def score(data, predictions):
 		if data[patient][date]['mood'] == round(value):
 			points += 1
 
-	return points / tries
+		error += abs(data[patient][date]['mood'] - round(value))
+
+	return points / tries, error / tries
 
 data = read_data('compressed.csv')
 predictions = process(data)
