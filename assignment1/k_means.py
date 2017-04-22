@@ -52,7 +52,7 @@ def init_k_means(init_data):
 	'''
     //
 	'''
-	no_clusters = 5
+	no_clusters = 1000
 	kmeans = KMeans(n_clusters=no_clusters)
 	print init_data.shape
 	init_data = np.array(init_data)
@@ -61,7 +61,6 @@ def init_k_means(init_data):
 	helper_mean = [[0, 0] for y in range(no_clusters)]
 
 	for i, val in enumerate(kmeans.labels_):
-		print i, val
 		if init_data[i][8] != 0:
 			helper_mean[val][0] += init_data[i][8]
 			helper_mean[val][1] += 1
@@ -81,9 +80,38 @@ def init_k_means(init_data):
 def predict_kmeans(kmeans, cluster_mean, new_data):
     return cluster_mean[kmeans.predict(new_data)[0]]
 
+def process_kmeans(kmeans, cluster_mean, data, timeframe = 1):
+	predictions = []
+
+	for patient, pat_value in data.iteritems():
+		dates = sorted(pat_value.keys())
+
+		for i, date in enumerate(dates):
+			if i < timeframe or pat_value[date].values()[8] == 0:
+				continue
+
+			predictions.append([patient, date, round(predict_kmeans(kmeans, cluster_mean, [pat_value[date].values()]))])
+
+	return predictions
+
+def score(data, predictions):
+	points = 0.0
+	tries = len(predictions)
+
+	for prediction in predictions:
+		patient, date, value = prediction
+
+		if data[patient][date]['mood'] == round(value):
+			points += 1
+
+	return points / tries
+
 if __name__ == '__main__':
 	data_dict = read_data('compressed.csv')
 	data_matrix = process_data(data_dict)
 	kmeans, cluster_mean = init_k_means(data_matrix)
-	for data in data_matrix:
-		print(data[8], predict_kmeans(kmeans, cluster_mean, [data]))
+	predictions = process_kmeans(kmeans, cluster_mean, data_dict)
+	print score(data_dict, predictions)
+
+	# for data in data_matrix:
+	# 	print(data[8], predict_kmeans(kmeans, cluster_mean, [data]))

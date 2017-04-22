@@ -28,7 +28,7 @@ def read_data(filename):
 	return data
 
 
-def process(data, timeframe):
+def process(data, timeframe = 1):
 	predictions = []
 
 	for patient, pat_value in data.iteritems():
@@ -38,7 +38,7 @@ def process(data, timeframe):
 			if i < timeframe:
 				continue
 
-			predictions.append([patient, date, int(pat_value[dates[i-1]]['mood'])])
+			predictions.append([patient, date, round(pat_value[dates[i-1]]['mood'])])
 
 	return predictions
 
@@ -49,11 +49,11 @@ def score(data, predictions):
 	for prediction in predictions:
 		patient, date, value = prediction
 
-		if data[patient][date]['mood'] == value:
+		if data[patient][date]['mood'] == round(value):
 			points += 1
 
 	return points / tries
 
 data = read_data('compressed.csv')
-predictions = process(data, 1)
+predictions = process(data)
 print score(data, predictions)
