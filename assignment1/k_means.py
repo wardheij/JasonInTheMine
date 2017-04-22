@@ -59,8 +59,8 @@ def init_k_means(in_data, no_clusters = 10):
 	kmeans = KMeans(n_clusters = no_clusters, n_init = 10)
 
 	# Leave out mood?
-	kmeans.fit(init_data)
-	# kmeans.fit(init_data[:, np.arange(init_data.shape[1]) != 8])
+	# kmeans.fit(init_data)
+	kmeans.fit(init_data[:, np.arange(init_data.shape[1]) != 8])
 
 	helper_mean = [[0, 0] for y in range(no_clusters)]
 
@@ -92,8 +92,8 @@ def process_kmeans(kmeans, cluster_mean, data, timeframe = 1):
 			if i < timeframe or pat_value[date].values()[8] == 0:
 				continue
 			# Leave out mood?
-			predictions.append([patient, date, predict_kmeans(kmeans, cluster_mean, [pat_value[date].values()])])	
-			# predictions.append([patient, date, predict_kmeans(kmeans, cluster_mean, [pat_value[date].values()[:8]+pat_value[date].values()[9:]])])
+			# predictions.append([patient, date, predict_kmeans(kmeans, cluster_mean, [pat_value[date].values()])])
+			predictions.append([patient, date, predict_kmeans(kmeans, cluster_mean, [pat_value[date].values()[:8]+pat_value[date].values()[9:]])])
 
 	return predictions
 

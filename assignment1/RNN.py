@@ -18,6 +18,8 @@ model.compile(optimizer='rmsprop',
 labels = data_matrix[:, 8]
 data = np.delete(data_matrix, 8, axis=1)
 
+# hier zijn je changes!!!!!!!
+
 # Convert labels to categorical one-hot encoding
 one_hot_labels = np_utils.to_categorical(labels, 10)
 
