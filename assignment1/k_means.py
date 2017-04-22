@@ -46,9 +46,6 @@ def process_data(data_dict):
 
 	return data
 
-	# fix for missing data
-	# http://stackoverflow.com/questions/35611465/python-scikit-learn-clustering-with-missing-data
-
 def init_k_means(init_data):
 	'''
     //
@@ -71,9 +68,10 @@ def init_k_means(init_data):
 	return kmeans, cluster_mean
 
 def predict_kmeans(cluster_mean, new_data):
-    return cluster_mean[kmeans.predict(new_data)]
+    return cluster_mean[kmeans.predict(new_data)[0]]
 
 if __name__ == '__main__':
 	data_dict = read_data('compressed.csv')
 	data_matrix = process_data(data_dict)
 	kmeans, cluster_mean = init_k_means(data_matrix)
+	print(predict_kmeans(cluster_mean, data_matrix[0]))
