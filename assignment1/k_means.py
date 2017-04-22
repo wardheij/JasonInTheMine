@@ -137,6 +137,3 @@ if __name__ == '__main__':
 
 	print "Best is: ", best, "\t Percentage: ", best_percentage, "\t Average error:", best_error
 
-
-	# for data in data_matrix:
-	# 	print(data[8], predict_kmeans(kmeans, cluster_mean, [data]))

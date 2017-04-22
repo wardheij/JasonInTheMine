@@ -41,7 +41,7 @@ def process_data(data_dict):
 	times = 1
 	for patient, dates in data_dict.items():
 		for date, entries in dates.items():
-			values = list(entries.values())
+			values = entries.values()
 
 		# # leave out mood?
 			# data.append(values[:7] + values[9:])
