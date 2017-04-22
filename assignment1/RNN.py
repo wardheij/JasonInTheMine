@@ -15,8 +15,8 @@ model.compile(optimizer='rmsprop',
               loss='categorical_crossentropy',
               metrics=['accuracy'])
 
-labels = data_matrix[:,8]
-data = np.delete(data_matrix,8, axis=1)
+labels = data_matrix[:, 8]
+data = np.delete(data_matrix, 8, axis=1)
 
 # Convert labels to categorical one-hot encoding
 one_hot_labels = np_utils.to_categorical(labels, 10)
