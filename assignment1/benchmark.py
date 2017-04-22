@@ -53,7 +53,6 @@ def score(data, predictions):
 		if data[patient][date]['mood'] == round(value):
 			points += 1
 
-		print value
 		error += abs(data[patient][date]['mood'] - value)
 
 	return points / tries, error / tries
