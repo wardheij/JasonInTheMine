@@ -1,6 +1,8 @@
 import copy
 import csv
 import numpy as np
+import random
+from sklearn.model_selection import train_test_split
 from sklearn.cluster import KMeans
 
 def read_data(filename):
@@ -55,7 +57,7 @@ def init_k_means(init_data):
 	init_data = [elem for elem in init_data if elem[8] != 0]
 	init_data = np.array(init_data)
 
-	no_clusters = 50
+	no_clusters = 10
 	kmeans = KMeans(n_clusters=no_clusters)
 
 	print init_data[0, np.arange(init_data.shape[1]) != 8]
@@ -91,8 +93,7 @@ def process_kmeans(kmeans, cluster_mean, data, timeframe = 1):
 		for i, date in enumerate(dates):
 			if i < timeframe or pat_value[date].values()[8] == 0:
 				continue
-			print [pat_value[date].values()[:8]+pat_value[date].values()[9:]]
-			predictions.append([patient, date, round(predict_kmeans(kmeans, cluster_mean, [pat_value[date].values()[:8]+pat_value[date].values()[9:]]))])
+			predictions.append([patient, date, predict_kmeans(kmeans, cluster_mean, [pat_value[date].values()[:8]+pat_value[date].values()[9:]])])
 
 	return predictions
 
@@ -107,15 +108,20 @@ def score(data, predictions):
 		if data[patient][date]['mood'] == round(value):
 			points += 1
 
-		error += abs(data[patient][date]['mood'] - round(value))
+		print value
+		error += abs(data[patient][date]['mood'] - value)
 
 	return points / tries, error / tries
 
 if __name__ == '__main__':
 	data_dict = read_data('compressed.csv')
-	data_matrix = process_data(data_dict)
+
+	train_data = dict(data_dict.items()[(len(data_dict) * 4)/5:])
+	test_data = dict(data_dict.items()[:len(data_dict)/5])
+
+	data_matrix = process_data(train_data)
 	kmeans, cluster_mean = init_k_means(data_matrix)
-	predictions = process_kmeans(kmeans, cluster_mean, data_dict)
+	predictions = process_kmeans(kmeans, cluster_mean, test_data)
 	print score(data_dict, predictions)
 
 	# for data in data_matrix:

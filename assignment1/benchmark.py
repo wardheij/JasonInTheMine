@@ -38,7 +38,7 @@ def process(data, timeframe = 1):
 			if i < timeframe:
 				continue
 
-			predictions.append([patient, date, round(pat_value[dates[i-1]]['mood'])])
+			predictions.append([patient, date, pat_value[dates[i-1]]['mood']])
 
 	return predictions
 
@@ -53,7 +53,8 @@ def score(data, predictions):
 		if data[patient][date]['mood'] == round(value):
 			points += 1
 
-		error += abs(data[patient][date]['mood'] - round(value))
+		print value
+		error += abs(data[patient][date]['mood'] - value)
 
 	return points / tries, error / tries
 
