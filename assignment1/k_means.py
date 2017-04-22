@@ -86,4 +86,4 @@ if __name__ == '__main__':
 	data_matrix = process_data(data_dict)
 	kmeans, cluster_mean = init_k_means(data_matrix)
 	for data in data_matrix:
-		print(data[8], predict_kmeans(kmeans, cluster_mean, data_matrix))
+		print(data[8], predict_kmeans(kmeans, cluster_mean, data))
