@@ -1,10 +1,15 @@
 import copy
 import csv
-import numpy as np
 import random
+
+import numpy as np
+
 from sklearn.cluster import KMeans
 
 def read_data(filename):
+	"""
+    Reads data from 'filename' into nested dictionary with [patients][date][variables].
+    """
 	variables = ['mood','circumplex.arousal','circumplex.valence','activity','screen','call', \
 				'sms', 'appCat.builtin','appCat.communication','appCat.entertainment', \
 				'appCat.finance','appCat.game','appCat.office','appCat.other',\
@@ -33,10 +38,10 @@ def read_data(filename):
 		return entries
 
 def process_data(data_dict):
-	'''
-	Transforms dictionary with data to a matrix containing arrays with values for
-	all variables.
-	'''
+    '''
+    Transforms dictionary with data to a list of dictionaries containing arrays with values for
+    all variables. Dict should be [patients][date][variables].
+    '''
 	data = []
 	times = 1
 	for patient, dates in data_dict.iteritems():

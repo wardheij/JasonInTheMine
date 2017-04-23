@@ -191,5 +191,5 @@ if __name__ == '__main__':
 
         print "Best is: ", best, "\t Percentage: ", best_percentage, "\t Average error:", best_error
 
-        # show results
+    # Show results
     # plot_stats(bests, percentages, errors)

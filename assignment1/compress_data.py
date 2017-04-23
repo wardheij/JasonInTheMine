@@ -37,6 +37,9 @@ def read_data(filename):
 	return data
 
 def write_data(data, filename):
+	"""
+	Writes data back in a compressed format. 
+	"""
 	with open(filename, 'wb') as data_file:
 		out = csv.writer(data_file, delimiter=',')
 

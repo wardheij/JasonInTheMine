@@ -1,7 +1,11 @@
 import csv
 
 def read_data(filename):
+	"""
+    Reads data from 'filename' into nested dictionary with [patients][date][variables].
+    """
 	data = {}
+
 	with open(filename, 'r') as data_file:
 		rdr = csv.reader(data_file, delimiter=',')
 		next(rdr, None)
@@ -29,6 +33,9 @@ def read_data(filename):
 
 
 def process(data, timeframe = 1):
+	"""
+    Constructs a list: [patient, date, prediction] for each entry in data.
+    """
 	predictions = []
 
 	for patient, pat_value in data.iteritems():
@@ -43,6 +50,11 @@ def process(data, timeframe = 1):
 	return predictions
 
 def score(data, predictions):
+    """
+    Scores predictions given in shape [patient, date, prediction] and returns 
+    the factor of "hits" and the average error. Predictions and actual values
+    are rounded to the nearest integer.
+    """
 	points = 0.0
 	tries = len(predictions)
 	error = 0
@@ -57,6 +69,7 @@ def score(data, predictions):
 
 	return points / tries, error / tries
 
-data = read_data('compressed.csv')
-predictions = process(data)
-print score(data, predictions)
+if __name__ == '__main__':
+	data = read_data('compressed.csv')
+	predictions = process(data)
+	print score(data, predictions)
