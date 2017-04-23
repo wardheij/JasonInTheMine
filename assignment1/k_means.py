@@ -2,6 +2,7 @@ import copy
 import csv
 import numpy as np
 import random
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.cluster import KMeans
 
@@ -59,8 +60,8 @@ def init_k_means(in_data, no_clusters = 10):
 	kmeans = KMeans(n_clusters = no_clusters, n_init = 10)
 
 	# Leave out mood?
-	# kmeans.fit(init_data)
-	kmeans.fit(init_data[:, np.arange(init_data.shape[1]) != 8])
+	kmeans.fit(init_data)
+	# kmeans.fit(init_data[:, np.arange(init_data.shape[1]) != 8])
 
 	helper_mean = [[0, 0] for y in range(no_clusters)]
 
@@ -92,8 +93,8 @@ def process_kmeans(kmeans, cluster_mean, data, timeframe = 1):
 			if i < timeframe or pat_value[date].values()[8] == 0:
 				continue
 			# Leave out mood?
-			# predictions.append([patient, date, predict_kmeans(kmeans, cluster_mean, [pat_value[date].values()])])
-			predictions.append([patient, date, predict_kmeans(kmeans, cluster_mean, [pat_value[date].values()[:8]+pat_value[date].values()[9:]])])
+			predictions.append([patient, date, predict_kmeans(kmeans, cluster_mean, [pat_value[date].values()])])
+			# predictions.append([patient, date, predict_kmeans(kmeans, cluster_mean, [pat_value[date].values()[:8]+pat_value[date].values()[9:]])])
 
 	return predictions
 
@@ -112,28 +113,48 @@ def score(data, predictions):
 
 	return points / tries, error / tries
 
+def plot_stats(bests, accuracies, errors):
+	fig, ax1 = plt.subplots()
+	ax2 = ax1.twinx()
+	ax1.scatter(bests, errors, color='orange')
+	ax2.scatter(bests, accuracies)
+	ax1.set_xlabel('Number of clusters')
+	ax2.set_ylabel('Accuracy')
+	ax1.set_ylabel('Average error', color='orange')
+
+	plt.show()
+
 if __name__ == '__main__':
-	data_dict = read_data('compressed.csv')
+	bests = []
+	percentages = []
+	errors = []
+	for k in range(20):
+		data_dict = read_data('compressed.csv')
 
-	train_data = dict(data_dict.items()[len(data_dict)/5:])
-	test_data = dict(data_dict.items()[:len(data_dict)/5])
+		train_data = dict(data_dict.items()[len(data_dict)/5:])
+		test_data = dict(data_dict.items()[:len(data_dict)/5])
 
-	data_matrix = process_data(train_data)
+		data_matrix = process_data(train_data)
 
-	best = 0
-	best_percentage = 0
-	best_error = 0
-	for i in range(1, 30):
-		kmeans, cluster_mean = init_k_means(data_matrix, i)
-		predictions = process_kmeans(kmeans, cluster_mean, test_data)
-		percentage, avg_error = score(data_dict, predictions)
+		best = 0
+		best_percentage = 0
+		best_error = 0
 
-		print i, "Percentage: ", percentage, "\t Average error:", avg_error
+		for i in range(1, 30):
+			kmeans, cluster_mean = init_k_means(data_matrix, i)
+			predictions = process_kmeans(kmeans, cluster_mean, test_data)
+			percentage, avg_error = score(data_dict, predictions)
 
-		if percentage > best_percentage or avg_error < best_error:
-			best = i
-			best_percentage = percentage
-			best_error = avg_error
+			# print i, "Percentage: ", percentage, "\t Average error:", avg_error
 
-	print "Best is: ", best, "\t Percentage: ", best_percentage, "\t Average error:", best_error
+			if percentage > best_percentage or avg_error < best_error:
+				best = i
+				best_percentage = percentage
+				best_error = avg_error
+			bests.append(i)
+			percentages.append(percentage)
+			errors.append(avg_error)
+		print "Best is: ", best, "\t Percentage: ", best_percentage, "\t Average error:", best_error
 
+		# show results
+	plot_stats(bests, percentages, errors)
