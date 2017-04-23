@@ -1,3 +1,11 @@
+# WJ Vrielink, WJ Heij, HJ Haanstra
+#
+# benchmark.py
+#
+# Calculate benchmark performance.
+#
+# 23-4-2017
+
 import csv
 
 def read_data(filename):
@@ -51,7 +59,7 @@ def process(data, timeframe = 1):
 
 def score(data, predictions):
     """
-    Scores predictions given in shape [patient, date, prediction] and returns 
+    Scores predictions given in shape [patient, date, prediction] and returns
     the factor of "hits" and the average error. Predictions and actual values
     are rounded to the nearest integer.
     """

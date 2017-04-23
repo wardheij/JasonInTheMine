@@ -1,3 +1,12 @@
+# WJ Vrielink, WJ Heij, HJ Haanstra
+#
+# kmeans.py
+#
+# k-means algorihm implementation and performance evaluation.
+#
+# 23-4-2017
+
+
 import copy
 import csv
 import random
@@ -116,7 +125,7 @@ def process_kmeans(kmeans, cluster_mean, data, timeframe = 1):
 
 def score(data, predictions):
     """
-    Scores predictions given in shape [patient, date, prediction] and returns 
+    Scores predictions given in shape [patient, date, prediction] and returns
     the factor of "hits" and the average error. Predictions and actual values
     are rounded to the nearest integer.
     """
@@ -136,14 +145,14 @@ def score(data, predictions):
 
 def plot_stats(bests, accuracies, errors):
     """
-    Plots the accuracies and errors in one plot. 
+    Plots the accuracies and errors in one plot.
     """
     fig, ax1 = plt.subplots()
     ax2 = ax1.twinx()
 
     ax1.scatter(bests, errors, color='orange')
     ax2.scatter(bests, accuracies)
-    
+
     ax1.set_xlabel('Number of clusters')
     ax2.set_ylabel('Accuracy')
     ax1.set_ylabel('Average error', color='orange')

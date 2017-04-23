@@ -1,3 +1,12 @@
+# WJ Vrielink, WJ Heij, HJ Haanstra
+#
+# helpers.py
+#
+# Helper functions for data representation.
+#
+# 23-4-2017
+
+
 import copy
 import csv
 import random
@@ -52,4 +61,3 @@ def process_data(data_dict):
 				data.append({patient + date: values})
 
 	return data, 8
-

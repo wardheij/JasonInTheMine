@@ -1,3 +1,12 @@
+# WJ Vrielink, WJ Heij, HJ Haanstra
+#
+# compress_data.py
+#
+# Compress input data to reduce file size.
+#
+# 23-4-2017
+
+
 import csv
 
 def read_data(filename):
@@ -38,7 +47,7 @@ def read_data(filename):
 
 def write_data(data, filename):
 	"""
-	Writes data back in a compressed format. 
+	Writes data back in a compressed format.
 	"""
 	with open(filename, 'wb') as data_file:
 		out = csv.writer(data_file, delimiter=',')
