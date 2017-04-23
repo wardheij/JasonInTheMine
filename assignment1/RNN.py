@@ -26,7 +26,7 @@ data_dict = helpers.read_data('compressed.csv')
 data_dict, mood_index = helpers.process_data(data_dict)
 data_dict = sorted(data_dict)
 data_matrix = np.array([elem.values()[0] for elem in data_dict])
-data_matrix = append_dates(data_dict, 7)
+data_matrix = append_dates(data_dict, 3)
 
 batch_s = 1
 scale = 10.0
