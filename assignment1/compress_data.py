@@ -1,6 +1,10 @@
 import csv
 
 def read_data(filename):
+	"""
+	Reads data from 'filename' into nested dictionary with [patients][date][variables].
+	"""
+
 	data = {}
 	with open(filename, 'r') as data_file:
 		rdr = csv.reader(data_file, delimiter=',')
@@ -43,6 +47,7 @@ def write_data(data, filename):
 
 					out.writerow([patient, date, variable, value / amount, amount])
 
-data = read_data('dataset_mood_smartphone.csv')
-print len(data)
-write_data(data, 'compressed.csv')
+if __name__ == '__main__':
+	data = read_data('dataset_mood_smartphone.csv')
+	print len(data)
+	write_data(data, 'compressed.csv')
