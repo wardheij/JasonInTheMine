@@ -39,13 +39,12 @@ def process_data(data_dict):
 	'''
 	data = []
 	times = 1
-	for patient, dates in data_dict.items():
-		for date, entries in dates.items():
-			keys = list(entries.keys())
-			values = list(entries.values())
+	for patient, dates in data_dict.iteritems():
+		for date, entries in dates.iteritems():
+			values = entries.values()
 
-		# # leave out mood?
-			# data.append(values[:7] + values[9:])
-			data.append(values)
-	mood_index = keys.index('mood')
-	return np.array(data), mood_index
+			if values[8] != 0:
+				data.append({patient + date: values})
+
+	return data, 8
+
