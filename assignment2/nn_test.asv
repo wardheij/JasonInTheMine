@@ -34,7 +34,7 @@ clc
 clear net tr output
 
 % define network architecture
-hiddenLayerSize = [256];
+hiddenLayerSize = [128 128];
 
 net = train_net(input, target, hiddenLayerSize, method);
 
