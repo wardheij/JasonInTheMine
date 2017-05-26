@@ -34,18 +34,22 @@ clc
 clear net tr output
 
 % define network architecture
-hiddenLayerSize = [256];
+hiddenLayerSize = [128];
 
-net = train_net(input, target, hiddenLayerSize, method);
+[net, tr] = train_net(input, target, hiddenLayerSize, method);
 
 % Test the Network
 output = net(input);
 output(:,1:30)'
 
 
+%% Evaluate performance
+per = eval_performance(output, target);
+
+
 %%
 errors = gsubtract(target,output);
-performance = perform(net,target,output)
+performance = perform(net,target,output);
 
 % View the Network
 view(net)

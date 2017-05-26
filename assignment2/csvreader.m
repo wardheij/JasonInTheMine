@@ -6,7 +6,7 @@ function lineArray = csvreader(fileName,delimiter, range)
   lineIndex = 1;               %# Index of cell to place the next line in
   nextLine = fgetl(fid);       %# Read the first line from the file
 %   while ~isequal(nextLine,-1)         %# Loop while not at the end of the file
-  while lineIndex < range
+  while lineIndex <= range
       lineArray{lineIndex} = nextLine;  %# Add the line to the cell array
     lineIndex = lineIndex+1;          %# Increment the line index
     nextLine = fgetl(fid);            %# Read the next line from the file
