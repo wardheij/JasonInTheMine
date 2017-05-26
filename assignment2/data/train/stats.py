@@ -7,7 +7,7 @@ def get_stats(data_matrix):
     stats = np.empty([5, no_variables])
     for i in range(no_variables):
         stats[0,i] = len(np.unique(data_matrix[:,i]))
-        stats[1,i] = data_matrix[:,i].size - np.count_nonzero(~np.isnan(data_matrix))
+        stats[1,i] = data_matrix[:,i].size - np.count_nonzero(~np.isnan(data_matrix[:,i]))
         stats[2,i] = np.count_nonzero(data_matrix[:,i])
         data_matrix[data_matrix == 0] = np.nan
 
@@ -16,7 +16,10 @@ def get_stats(data_matrix):
     return stats
 
 def load_csv(filename):
-    return np.genfromtxt(open(filename, "rb"), delimiter=",")
+    skip = 0
+    if '0' in filename:
+        skip = 1
+    return np.genfromtxt(open(filename, "rb"), skip_header=skip, delimiter=",")
 
 
 if __name__ == "__main__":
@@ -34,7 +37,7 @@ if __name__ == "__main__":
             print('Statistics calculated.')
         else:
             continue
-    # stats = np.divide(stats, len(files))
+    stats = np.divide(stats, len(files))
     np.savetxt('unique.txt', stats[0,:])
     np.savetxt('missing.txt', stats[1,:])
     np.savetxt('zeros.txt', stats[2,:])
