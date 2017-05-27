@@ -1,10 +1,9 @@
-function processed_data = processData(data)
+function processed_data = processData(data, lineInd, batchSize)
 % this function removes missing data points and obsolete columns
 
-percentages = importdata('data/train/percentages_new.txt');
-mean = importdata('data/train/mean.txt');
-std = importdata('data/train/std.txt');
+file = strcat('data_', num2str(lineInd), '_', num2str(lineInd+batchSize));
 
+<<<<<<< HEAD
 for i = 1:size(data, 1)
     ind = find(strcmp(data(i,:), 'NULL'));
     
@@ -28,53 +27,88 @@ for i = 1:size(data, 1)
     end
     
 end
+=======
+if exist(strcat('matlab_data/', file, '.mat'), 'file')
 
-processed_data = [];
+	processed_data = importdata(strcat('matlab_data/', file, '.mat'));
 
-% remove title blocks
-labels = data(1,:);
-data(1,:) = [];
+else
+>>>>>>> 75e18a8679a382b85e024c162e0df595d9848f54
+
+	percentages = importdata('data/train/percentages01.txt');
+	mean = importdata('data/train/mean01.txt');
+	std = importdata('data/train/std01.txt');
+
+	for i = 1:size(data, 1)
+	    ind = find(strcmp(data(i,:), 'NULL'));
+	    
+	    for k = ind
+	        if percentages(2,k) < 0.2
+	            mu = mean(k);
+	            sigma = std(k);
+	            pd = makedist('Normal','mu',mu,'sigma',sigma);
+	            
+	            % replace missing data with average when there is enough data
+	            data{i,k} = num2str(random(pd));
+	        else
+	            % replace all NULLs by minus 1.
+	            data{i,k} = '-1';
+	        end
+	    end
+	    
+	end
+
+	processed_data = [];
+
+	% remove title blocks
+	labels = data(1,:);
+	% data(1,:) = [];
 
 
-% process date
-formatIn = 'yyyy-mm-dd HH:MM:SS';
+	% process date
+	formatIn = 'yyyy-mm-dd HH:MM:SS';
 
-DateStrings = data(:, 2);
+	DateStrings = data(:, 2);
 
-date = datevec(DateStrings,formatIn);
-day_of_week = weekday(DateStrings);
+	date = datevec(DateStrings,formatIn);
+	day_of_week = weekday(DateStrings);
+    
+    % TODO: Count number of competitors
 
-processed_data = [processed_data, date];
-processed_data = [processed_data, day_of_week];
 
-% remove date
-data(:,2) = [];
+    % DEPRICATED BOOL IS ALWAYS 0!
+    % dest_bool = zeros(size(data,1));
+    % country = find(ismember(labels, "visitor_location_country_id"), 1, 'first');
+    % prop_country = find(ismember(labels, "prop_country_id"), 1, 'first');
+    % 
+    % for i = 1:size(data, 1)
+    %     
+    %     if (preprocessed_data(i, country) == preprocessed_data(i, prop_country))
+    %         dest_bool(i) = 1;
+    %     else
+    %         dest_bool(i) = 0;
+    %     end
+    % end
+	processed_data = [processed_data, date];
+	processed_data = [processed_data, day_of_week];
 
-% TODO: Count number of competitors
+	% remove date
+	data(:,2) = [];
 
-% Process before use
-preprocessed_data = str2double(data);
+	preprocessed_data = str2double(data);
 
-% DEPRICATED BOOL IS ALWAYS 0!
-% dest_bool = zeros(size(data,1));
-% country = find(ismember(labels, "visitor_location_country_id"), 1, 'first');
-% prop_country = find(ismember(labels, "prop_country_id"), 1, 'first');
-% 
-% for i = 1:size(data, 1)
-%     
-%     if (preprocessed_data(i, country) == preprocessed_data(i, prop_country))
-%         dest_bool(i) = 1;
-%     else
-%         dest_bool(i) = 0;
+	% Standard vars:
+% 	varlist = {'prop_starrating', 'prop_review_score', 'prop_brand_bool', 'prop_location_score1', 'prop_location_score2', 'promotion_flag', 'srch_length_of_stay', 'srch_booking_window', 'srch_query_affinity_score', 'orig_destination_distance'};
+    varlist = [9 10 11 12 13 17 19 20 25 26 52 53 54];
+    
+% 	for i = varlist
+% 	    index = ismember(labels,i);
+    processed_data = [processed_data, preprocessed_data(:,varlist-1)];
 %     end
-% end
+    
+    save(strcat('matlab_data/', file), 'processed_data');
 
-% Standard vars:
-varlist = ["prop_starrating", "prop_review_score", "prop_brand_bool", "prop_location_score1", "prop_location_score2", "promotion_flag", "srch_length_of_stay", "srch_booking_window", "srch_query_affinity_score", "orig_destination_distance"];
 
-for i = varlist
-    index = find(ismember(labels,i), 1, 'first');
-    processed_data = [processed_data, preprocessed_data(:,index)];
 end
 
 
