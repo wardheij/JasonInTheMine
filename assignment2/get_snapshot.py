@@ -27,7 +27,7 @@ def get_snapshot(filename, outfile):
 				if not skip:
 					out.writerow(row)
 
-get_snapshot('data/test_set_VU_DM_2014.csv', 'data/test_set_snapshot.csv')
+get_snapshot('data/training_set_VU_DM_2014.csv', 'data/training_set_snapshot.csv')
 
 
 
