@@ -11,28 +11,35 @@ for i = 1:size(data, 1)
     
 end
 
+processed_data = [];
+
 % remove title blocks
 labels = data(1,:);
 data(1,:) = [];
 
 
-% TODO: process date
+% process date
+formatIn = 'yyyy-mm-dd HH:MM:SS';
 
+DateStrings = data(:, 2);
 
+date = datevec(DateStrings,formatIn);
+day_of_week = weekday(DateStrings);
+
+processed_data = [processed_data, date];
+processed_data = [processed_data, day_of_week];
 
 % remove date
 data(:,2) = [];
 
 preprocessed_data = str2double(data);
 
-processed_data = [];
-
 % This order:
 varlist = ["prop_starrating", "prop_review_score", "prop_brand_bool", "prop_location_score1", "prop_location_score2", "promotion_flag", "srch_length_of_stay", "srch_booking_window", "srch_query_affinity_score", "orig_destination_distance"];
 
 for i = varlist
-    index = find(labels, i);
-    processed_data = append(processed_data, preprocessed_data(:,index));
+    index = ismember(labels,i);
+    processed_data = [processed_data, preprocessed_data(:,index)];
 end
 
 end
