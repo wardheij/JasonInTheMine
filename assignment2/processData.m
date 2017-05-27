@@ -3,37 +3,11 @@ function processed_data = processData(data, lineInd, batchSize)
 
 file = strcat('data_', num2str(lineInd), '_', num2str(lineInd+batchSize));
 
-<<<<<<< HEAD
-for i = 1:size(data, 1)
-    ind = find(strcmp(data(i,:), 'NULL'));
-    
-    for k = ind
-        if percentages(2,k) < 0.2
-            mu = mean(k);
-            sigma = std(k);
-            pd = makedist('Normal','mu',mu,'sigma',sigma);
-            
-            % replace missing data with average when there is enough data
-            data{i,k} = random(pd);
-        else
-            if k > 28
-                % k > 28 holds competitors. We don't want -1 here
-                data{i,k} = 'NULL';
-            else
-                % replace all NULLs by minus 1.
-                data{i,k} = '-1';
-            end
-        end
-    end
-    
-end
-=======
 if exist(strcat('matlab_data/', file, '.mat'), 'file')
 
 	processed_data = importdata(strcat('matlab_data/', file, '.mat'));
 
 else
->>>>>>> 75e18a8679a382b85e024c162e0df595d9848f54
 
 	percentages = importdata('data/train/percentages01.txt');
 	mean = importdata('data/train/mean01.txt');
