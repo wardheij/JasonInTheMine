@@ -23,10 +23,13 @@ def make_batches(filename, batchname, batchsize=10000):
 
 		for row in rdr:
 			if row[0] != last:
-				for cached in cache:
-					out.writerow(cached)
+				if booked:
+					cur_size += 1
 
-				print "booked: ", booked, "    clicked: ", clicked
+					for cached in cache:
+						out.writerow(cached)
+
+					print "booked: ", booked, "    clicked: ", clicked
 
 				cache = []
 				clicked = 0
@@ -41,20 +44,19 @@ def make_batches(filename, batchname, batchsize=10000):
 
 				last = row[0]
 
-				cur_size += 1
 			
 			# out.writerow(row)
 			cache.append(row)
 			if int(row[-1]):
 				booked += 1
+				lucky+=1
 			if int(row[-3]):
 				clicked += 1
-				lucky+=1
 
 
 		for cached in cache:
 			out.writerow(cached)
 
-		print "Total clicks: ", lucky
+		print "Total booked: ", lucky
 
 make_batches('data/training_set_snapshot.csv', 'data/training_special_batches', batchsize=100)
