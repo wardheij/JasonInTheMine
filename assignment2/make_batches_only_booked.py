@@ -29,7 +29,7 @@ def make_batches(filename, batchname, batchsize=10000):
 					for cached in cache:
 						out.writerow(cached)
 
-					print "booked: ", booked, "    clicked: ", clicked
+					# print "booked: ", booked, "    clicked: ", clicked
 
 				cache = []
 				clicked = 0
@@ -57,6 +57,6 @@ def make_batches(filename, batchname, batchsize=10000):
 		for cached in cache:
 			out.writerow(cached)
 
-		print "Total booked: ", lucky
+		# print "Total booked: ", lucky
 
 make_batches('data/training_set_snapshot.csv', 'data/training_special_batches', batchsize=100)
