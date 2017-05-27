@@ -1,8 +1,15 @@
 %http://stackoverflow.com/questions/4747834/import-csv-file-with-mixed-data-types
-function lineArray = csvreader(fileName,delimiter, range)
+function lineArray = csvreader(fileName,delimiter, skip, range)
   fid = fopen(fileName,'r');   %# Open the file
   lineArray = cell(100,1);     %# Preallocate a cell array (ideally slightly
                                %#   larger than is needed)
+                               
+  % skip over lines
+  for i = 1:skip
+      nextLine = fgets(fid);
+  end
+                               
+                               
   lineIndex = 1;               %# Index of cell to place the next line in
   nextLine = fgetl(fid);       %# Read the first line from the file
   while ~isequal(nextLine,-1)         %# Loop while not at the end of the file
