@@ -2,19 +2,22 @@ function processed_data = processData(data)
 % this function removes missing data points and obsolete columns
 
 percentages = importdata('data/train/percentages_new.txt');
+mean = importdata('data/train/mean.txt');
+std = importdata('data/train/std.txt');
 
 for i = 1:size(data, 1)
     ind = find(strcmp(data(i,:), 'NULL'));
     
-    mu = percentage(4,i);
-    sigma = percentage(4,i);
-    pd = makedist('Normal','mu',mu,'sigma',sigma);
-    
-    % for now, replace all NULLs by minus 1.
     for k = ind
-        if percentages(2,i) < 0.2
+        if percentages(2,k) < 0.2
+            mu = mean(k);
+            sigma = std(k);
+            pd = makedist('Normal','mu',mu,'sigma',sigma);
+            
+            % replace missing data with average when there is enough data
             data{i,k} = random(pd);
         else
+            % replace all NULLs by minus 1.
             data{i,k} = '-1';
         end
     end
