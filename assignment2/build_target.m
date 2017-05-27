@@ -18,7 +18,7 @@ if strcmp(method, 'classification')
 
         % if booked 
         if ismember(target(k,:), [1 1], 'rows')
-            new_target(k,:) = [1 0 0];
+            new_target(k,:) = [1 1 0];
         % if clicked
         elseif ismember(target(k,:), [1 0], 'rows')
             new_target(k,:) = [0 1 0];
