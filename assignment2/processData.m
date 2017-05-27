@@ -9,7 +9,8 @@ if exist(strcat('matlab_data/', file, '.mat'), 'file')
 
 else
 
-	percentages = importdata('data/train/percentages01.txt');
+	% percentages = importdata('data/train/percentages01.txt');
+    percentages = p_miss;
 	mean = importdata('data/train/mean01.txt');
 	std = importdata('data/train/std01.txt');
 
@@ -17,7 +18,7 @@ else
 	    ind = find(strcmp(data(i,:), 'NULL'));
 	    
 	    for k = ind
-	        if percentages(2,k) < 0.2
+	        if percentages(k) < 0.2
 	            mu = mean(k);
 	            sigma = std(k);
 	            pd = makedist('Normal','mu',mu,'sigma',sigma);
