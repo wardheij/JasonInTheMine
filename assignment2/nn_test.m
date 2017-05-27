@@ -4,7 +4,7 @@ warning off
 
 
 %% iterate over entire training set
-batchSize = 100000;
+batchSize = 1e4;
 numLines = 4e6;
 
 % define network architecture
@@ -26,7 +26,7 @@ for i = 1:batchSize:numLines
 
     %% Clean up input data
 
-    data = processData(data);
+    data = processData(data, i, batchSize);
 
 
     %% split data
@@ -35,7 +35,7 @@ for i = 1:batchSize:numLines
     clear input target
 
     % split into input and target data
-    input = data(:, 1:50);  % input data
+    input = data(:, 1:end-3);  % input data
 
     target = build_target(data, method);
 
