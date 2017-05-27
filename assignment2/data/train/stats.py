@@ -17,7 +17,7 @@ def get_stats(data_matrix):
         stats[2,i] = length - np.count_nonzero(data_matrix[~np.isnan(data_matrix[:,i])])
 
         # set al zeros in this column to NaN for more easy calculation
-        data_matrix[data_matrix[:,i] == 0] = np.nan
+        data_matrix[data_matrix[:,i] == 0,i] = np.nan
 
         # mean and standard deviation
         stats[3,i] = np.nanmean(data_matrix[:, i])
@@ -58,5 +58,5 @@ if __name__ == "__main__":
     np.savetxt('zeros01.txt', stats[2,:])
     np.savetxt('mean01.txt', stats[3,:])
     np.savetxt('std01.txt', stats[4,:])
-    np.savetxt('percentages01.txt', np.divide(stats[1:3,:], total_length))
+    np.savetxt('percentages01.txt', np.divide(stats[1:4,:], total_length))
     print('Total number of entries: {}'.format(total_length))
