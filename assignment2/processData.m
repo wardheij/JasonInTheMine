@@ -9,8 +9,7 @@ if exist(strcat('matlab_data/', file, '.mat'), 'file')
 
 else
 
-	% percentages = importdata('data/train/percentages01.txt');
-    percentages = p_miss;
+	percentages = importdata('data/train/percentages01.txt');
 	mean = importdata('data/train/mean01.txt');
 	std = importdata('data/train/std01.txt');
 
@@ -18,7 +17,7 @@ else
 	    ind = find(strcmp(data(i,:), 'NULL'));
 	    
 	    for k = ind
-	        if percentages(k) < 0.2
+	        if percentages(2,k) < 0.2
 	            mu = mean(k);
 	            sigma = std(k);
 	            pd = makedist('Normal','mu',mu,'sigma',sigma);
@@ -74,7 +73,7 @@ else
 
 	% Standard vars:
 % 	varlist = {'prop_starrating', 'prop_review_score', 'prop_brand_bool', 'prop_location_score1', 'prop_location_score2', 'promotion_flag', 'srch_length_of_stay', 'srch_booking_window', 'srch_query_affinity_score', 'orig_destination_distance'};
-    varlist = [9 10 11 12 13 17 19 20 25 26 52 53 54];
+    varlist = [9 10 11 12 13 16 18 19 24 25 52 53 54];
     
 % 	for i = varlist
 % 	    index = ismember(labels,i);

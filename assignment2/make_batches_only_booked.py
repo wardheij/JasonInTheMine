@@ -59,4 +59,4 @@ def make_batches(filename, batchname, batchsize=10000):
 
 		# print "Total booked: ", lucky
 
-make_batches('data/training_set_snapshot.csv', 'data/training_special_batches', batchsize=100)
+make_batches('data/training_set_VU_DM_2014.csv', 'data/training_special_batches', batchsize=100000000)

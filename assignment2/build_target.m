@@ -7,7 +7,7 @@ target(:, 2) = [];
 
 % encode into format useable to patternnet. The target data for pattern 
 % recognition networks should consist of vectors of all zero values except 
-% for a 1 in element i, where i is the class they are to represent.
+% for a 1 in element i, where i is the class they are to represent.met
 % three classes: [1 0 0] for booked, [0 1 0] for click, [0 0 1] for no
 % click
 
