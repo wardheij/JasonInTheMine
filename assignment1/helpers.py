@@ -47,17 +47,17 @@ def read_data(filename):
 		return entries
 
 def process_data(data_dict):
-    '''
-    Transforms dictionary with data to a list of dictionaries containing arrays with values for
-    all variables. Dict should be [patients][date][variables].
-    '''
+	'''
+	Transforms dictionary with data to a list of dictionaries containing arrays with values for
+	all variables. Dict should be [patients][date][variables].
+	'''
 	data = []
 	times = 1
-	for patient, dates in data_dict.iteritems():
-		for date, entries in dates.iteritems():
+	for patient, dates in data_dict.items():
+		for date, entries in dates.items():
 			values = entries.values()
-
+			values = list(values)
 			if values[8] != 0:
-				data.append({patient + date: values})
+				data.append({patient + date: list(values)})
 
 	return data, 8
