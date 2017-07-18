@@ -50,6 +50,8 @@ data_matrix = np.array([list(elem.values())[0] for elem in list(data_dict)])
 #               loss='categorical_crossentropy',
 #               metrics=['accuracy'])
 
+# http://monik.in/a-noobs-guide-to-implementing-rnn-lstm-using-tensorflow/
+
 num_vars = 30 # TODO: hoeveel variabelen zijn er per dag gelogd?
 num_hidden = 24 # TODO: geen idee hoeveel dit moet zijn
 
