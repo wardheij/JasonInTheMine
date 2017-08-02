@@ -4,8 +4,9 @@ import helpers
 import numpy as np
 
 from keras.models import Sequential
-from keras.layers import Dense, Activation
+from keras.layers import Dense, Activation, Dropout
 from keras.utils import np_utils
+from keras.layers.recurrent import LSTM
 
 from numpy import linalg as LA
 
@@ -36,20 +37,44 @@ def append_dates(data_dict, days):
 scale = 10.0
 
 # Prepare data
-data_dict = helpers.read_data('compressed.csv')
+data_dict = helpers.read_data('additive_and_avg_compressed.csv')
 data_dict, mood_index = helpers.process_data(data_dict)
 data_dict = sorted(data_dict)
 data_matrix = np.array([elem.values()[0] for elem in data_dict])
-data_matrix = append_dates(data_dict, 5)
+data_matrix = append_dates(data_dict, 1)
 
 # Build NN
 model = Sequential()
-model.add(Dense(32, activation='relu', input_dim=data_matrix.shape[1]))
-model.add(Dense(32, activation='softmax'))
-model.add(Dense(int(10 * scale), activation='softmax'))
+# model.add(Dense(32, activation='relu', input_dim=data_matrix.shape[1]))
+# model.add(Dense(32, activation='softmax'))
+# model.add(Dense(int(10 * scale), activation='softmax'))
+# model.compile(optimizer='rmsprop',
+#               loss='categorical_crossentropy',
+#               metrics=['accuracy'])
+
+layers = [95, 50, 100, int(10 * scale)]
+
+model.add(LSTM(
+        layers[1],
+        input_dim=data_matrix.shape[1],
+        return_sequences=True))
+
+model.add(Dropout(0.2))
+
+model.add(LSTM(
+        layers[2],
+        return_sequences=False))
+
+model.add(Dropout(0.2))
+
+model.add(Dense(
+        layers[3]))
+
+model.add(Activation("linear"))
 model.compile(optimizer='rmsprop',
               loss='categorical_crossentropy',
               metrics=['accuracy'])
+# Comment
 
 # Set labels
 train_labels = np.array([round(data_matrix[i + 1 + len(data_matrix)/5][mood_index]*scale) for i, x in enumerate(data_matrix[len(data_matrix)/5:-1, mood_index])])
@@ -58,6 +83,9 @@ data = data_matrix
 
 # Set data
 train_data = data[len(data)/5:-1]
+
+train_data = np.reshape(train_data, (train_data.shape[0], train_data.shape[1], 1))
+
 test_data = data[:len(data)/5]
 test_data_mood = data_matrix[:len(data_matrix)/5]
 
@@ -66,7 +94,7 @@ train_one_hot_labels = np_utils.to_categorical(train_labels.astype(int), int(10 
 test_one_hot_labels = np_utils.to_categorical(test_labels.astype(int), int(10 * scale))
 
 # Train the model, iterating on the data in batches of 32 samples
-model.fit(train_data, train_one_hot_labels, epochs=50, batch_size=32, verbose=0)
+model.fit(train_data, train_one_hot_labels, epochs=50, batch_size=32, verbose=1)
 
 # Predictions
 predictions = model.predict(test_data)
