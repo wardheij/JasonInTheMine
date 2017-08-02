@@ -52,7 +52,7 @@ model = Sequential()
 #               loss='categorical_crossentropy',
 #               metrics=['accuracy'])
 
-layers = [95, 100, 100, int(10 * scale)]
+layers = [1, 100, 100, 1]
 
 model.add(LSTM(
         layers[1],
@@ -69,16 +69,15 @@ model.add(LSTM(
 
 model.add(Dense(
         layers[3],
-        activation='sigmoid'))
+        activation='linear'))
 
 model.compile(optimizer='rmsprop',
-              loss='categorical_crossentropy',
+              loss='mse',
               metrics=['accuracy'])
 # Comment
 
 # Set labels
 train_labels = np.array([round(data_matrix[i + 1 + len(data_matrix)/5][mood_index]*scale) for i, x in enumerate(data_matrix[len(data_matrix)/5:-1, mood_index])])
-test_labels = np.array([round(data_matrix[i + 1][mood_index]*scale) for i, x in enumerate(data_matrix[:len(data_matrix)/5, mood_index])])
 data = data_matrix
 
 # Set data
@@ -87,18 +86,14 @@ train_data -= train_data.mean()
 
 train_data = np.reshape(train_data, (train_data.shape[0], train_data.shape[1], 1))
 
-
 test_data = data[:len(data)/5]
 test_data_mood = data_matrix[:len(data_matrix)/5]
 
 test_data = np.reshape(test_data, (test_data.shape[0], test_data.shape[1], 1))
 
-# Convert labels to categorical one-hot encoding
-train_one_hot_labels = np_utils.to_categorical(train_labels.astype(int), int(10 * scale))
-test_one_hot_labels = np_utils.to_categorical(test_labels.astype(int), int(10 * scale))
-
+print train_labels[0]
 # Train the model, iterating on the data in batches of 32 samples
-model.fit(train_data, train_one_hot_labels, epochs=50, batch_size=512, shuffle=False, verbose=2)
+model.fit(train_data,train_labels, epochs=50, batch_size=32, verbose=2)
 
 # Predictions
 predictions = model.predict(test_data)
