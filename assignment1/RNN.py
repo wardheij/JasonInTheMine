@@ -34,7 +34,7 @@ def append_dates(data_dict, days):
 	return out
 
 # Scales the output to enhance precision
-scale = 10.0
+scale = 1.0
 
 # Prepare data
 data_dict = helpers.read_data('additive_and_avg_compressed.csv')
@@ -52,25 +52,35 @@ model = Sequential()
 #               loss='categorical_crossentropy',
 #               metrics=['accuracy'])
 
-layers = [95, 50, 100, int(10 * scale)]
+layers = [95, 100, 50, int(10 * scale)]
 
 model.add(LSTM(
         layers[1],
-        input_dim=data_matrix.shape[1],
-        return_sequences=True))
+        return_sequences=True,
+        activation='relu',
+        input_shape=(None, 1)))
 
 model.add(Dropout(0.2))
 
 model.add(LSTM(
         layers[2],
+        activation='sigmoid',
+        return_sequences=True))
+
+model.add(Dropout(0.2))
+
+
+model.add(LSTM(
+        layers[2],
+        activation='sigmoid',
         return_sequences=False))
 
 model.add(Dropout(0.2))
 
 model.add(Dense(
-        layers[3]))
+        layers[3],
+        activation='sigmoid'))
 
-model.add(Activation("linear"))
 model.compile(optimizer='rmsprop',
               loss='categorical_crossentropy',
               metrics=['accuracy'])
@@ -89,12 +99,14 @@ train_data = np.reshape(train_data, (train_data.shape[0], train_data.shape[1], 1
 test_data = data[:len(data)/5]
 test_data_mood = data_matrix[:len(data_matrix)/5]
 
+test_data = np.reshape(test_data, (test_data.shape[0], test_data.shape[1], 1))
+
 # Convert labels to categorical one-hot encoding
 train_one_hot_labels = np_utils.to_categorical(train_labels.astype(int), int(10 * scale))
 test_one_hot_labels = np_utils.to_categorical(test_labels.astype(int), int(10 * scale))
 
 # Train the model, iterating on the data in batches of 32 samples
-model.fit(train_data, train_one_hot_labels, epochs=50, batch_size=32, verbose=1)
+model.fit(train_data, train_one_hot_labels, epochs=50, batch_size=32, verbose=2)
 
 # Predictions
 predictions = model.predict(test_data)
