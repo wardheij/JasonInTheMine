@@ -67,6 +67,8 @@ model.add(LSTM(
         activation='sigmoid',
         return_sequences=False))
 
+model.add(Dropout(0.2))
+
 model.add(Dense(
         layers[3],
         activation='linear'))
@@ -93,7 +95,7 @@ test_data = np.reshape(test_data, (test_data.shape[0], test_data.shape[1], 1))
 
 print train_labels[0]
 # Train the model, iterating on the data in batches of 32 samples
-model.fit(train_data,train_labels, epochs=50, batch_size=32, verbose=2)
+model.fit(train_data,train_labels, epochs=50, batch_size=1, verbose=2)
 
 # Predictions
 predictions = model.predict(test_data)
@@ -104,7 +106,7 @@ error = 0.0
 error_list = []
 
 for i, entry in enumerate(test_data_mood):
-	predict = np.argmax(predictions[i]) / scale
+	predict = predictions[i]
 
 	if data_dict[i].keys()[0][:7] == data_dict[i + 1].keys()[0][:7] and round(predict) == round(entry[mood_index]):
 		j += 1
