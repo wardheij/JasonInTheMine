@@ -16,48 +16,48 @@ import numpy as np
 from sklearn.cluster import KMeans
 
 def read_data(filename):
-	"""
+    """
     Reads data from 'filename' into nested dictionary with [patients][date][variables].
     """
-	variables = ['mood','circumplex.arousal','circumplex.valence','activity','screen','call', \
-				'sms', 'appCat.builtin','appCat.communication','appCat.entertainment', \
-				'appCat.finance','appCat.game','appCat.office','appCat.other',\
-				'appCat.social','appCat.travel','appCat.unknown','appCat.utilities', \
-				'appCat.weather']
+    variables = ['mood','circumplex.arousal','circumplex.valence','activity','screen','call', \
+                'sms', 'appCat.builtin','appCat.communication','appCat.entertainment', \
+                'appCat.finance','appCat.game','appCat.office','appCat.other',\
+                'appCat.social','appCat.travel','appCat.unknown','appCat.utilities', \
+                'appCat.weather']
 
-	entry = {var: 0 for var in variables}
+    entry = {var: 0 for var in variables}
 
-	with open(filename, 'r') as data_file:
-		rdr = csv.reader(data_file, delimiter=',')
-		next(rdr, None)
+    with open(filename, 'r') as data_file:
+        rdr = csv.reader(data_file, delimiter=',')
+        next(rdr, None)
 
-		entries = {}
+        entries = {}
 
-		for row in rdr:
+        for row in rdr:
 
-			patient, date, variable, value, times = row
+            patient, date, variable, value, times = row
 
-			if patient not in entries:
-				entries[patient] = {}
-			if date not in entries[patient]:
-				entries[patient][date] = copy.copy(entry)
+            if patient not in entries:
+                entries[patient] = {}
+            if date not in entries[patient]:
+                entries[patient][date] = copy.copy(entry)
 
-			entries[patient][date][variable] = float(value)
+            entries[patient][date][variable] = float(value)
 
-		return entries
+        return entries
 
 def process_data(data_dict):
     '''
     Transforms dictionary with data to a list of dictionaries containing arrays with values for
     all variables. Dict should be [patients][date][variables].
     '''
-	data = []
-	times = 1
-	for patient, dates in data_dict.iteritems():
-		for date, entries in dates.iteritems():
-			values = entries.values()
+    data = []
+    times = 1
+    for patient, dates in data_dict.iteritems():
+        for date, entries in dates.iteritems():
+            values = entries.values()
 
-			if values[8] != 0:
-				data.append({patient + date: values})
+            if values[8] != 0:
+                data.append({patient + date: values})
 
-	return data, 8
+    return data, 8
